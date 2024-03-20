@@ -1,43 +1,65 @@
 package chess.domain.chessboard;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static java.util.Map.entry;
 
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
-import chess.domain.chessboard.attribute.Square;
+import chess.domain.attribute.Color;
+import chess.domain.attribute.File;
+import chess.domain.attribute.Position;
+import chess.domain.attribute.Rank;
+import chess.domain.piece.Bishop;
+import chess.domain.piece.King;
 import chess.domain.piece.Knight;
-import chess.domain.piece.Pawn;
-import chess.domain.piece.Piece;
-import chess.domain.piece.attribute.Position;
+import chess.domain.piece.PieceType;
+import chess.domain.piece.Queen;
+import chess.domain.piece.Rook;
+import chess.domain.piece.StartingPawn;
 
 class ChessboardTest {
 
-    static Stream<Arguments> move() {
-        return Stream.of(
-                Arguments.of(Position.from("a2"), Position.from("a3"), Pawn.class),
-                Arguments.of(Position.from("e2"), Position.from("e4"), Pawn.class),
-                Arguments.of(Position.from("b1"), Position.from("c3"), Knight.class),
-                Arguments.of(Position.from("g8"), Position.from("f6"), Knight.class)
-        );
-    }
 
-    @DisplayName("기물을 이동한다.")
-    @MethodSource
-    @ParameterizedTest
-    <P extends Piece> void move(Position source, Position target, Class<P> pieceClass) {
-        Chessboard sut = ChessboardFactory.create();
-        sut.move(source, target);
-        Square square = sut.squareIn(target);
-        Piece piece = square.piece();
-        assertAll(
-                () -> assertThat(piece).isInstanceOf(pieceClass),
-                () -> assertThat(piece.position()).isEqualTo(target)
-        );
+    @DisplayName("체스판을 생성한다.")
+    @Test
+    void create() {
+        Chessboard chessBoard = Chessboard.create();
+        assertThat(chessBoard.getChessboard())
+                .contains(
+                        entry(Position.of(File.E, Rank.ONE), new King(Color.WHITE, PieceType.KING)),
+                        entry(Position.of(File.E, Rank.EIGHT), new King(Color.BLACK, PieceType.KING)),
+                        entry(Position.of(File.D, Rank.ONE), new Queen(Color.WHITE, PieceType.QUEEN)),
+                        entry(Position.of(File.D, Rank.EIGHT), new Queen(Color.BLACK, PieceType.QUEEN)),
+                        entry(Position.of(File.C, Rank.ONE), new Bishop(Color.WHITE, PieceType.BISHOP)),
+                        entry(Position.of(File.F, Rank.ONE), new Bishop(Color.WHITE, PieceType.BISHOP)),
+                        entry(Position.of(File.C, Rank.EIGHT), new Bishop(Color.BLACK, PieceType.BISHOP)),
+                        entry(Position.of(File.F, Rank.EIGHT), new Bishop(Color.BLACK, PieceType.BISHOP)),
+                        entry(Position.of(File.B, Rank.ONE), new Knight(Color.WHITE, PieceType.KNIGHT)),
+                        entry(Position.of(File.G, Rank.ONE), new Knight(Color.WHITE, PieceType.KNIGHT)),
+                        entry(Position.of(File.B, Rank.EIGHT), new Knight(Color.BLACK, PieceType.KNIGHT)),
+                        entry(Position.of(File.G, Rank.EIGHT), new Knight(Color.BLACK, PieceType.KNIGHT)),
+                        entry(Position.of(File.A, Rank.ONE), new Rook(Color.WHITE, PieceType.ROOK)),
+                        entry(Position.of(File.H, Rank.ONE), new Rook(Color.WHITE, PieceType.ROOK)),
+                        entry(Position.of(File.A, Rank.EIGHT), new Rook(Color.BLACK, PieceType.ROOK)),
+                        entry(Position.of(File.H, Rank.EIGHT), new Rook(Color.BLACK, PieceType.ROOK)),
+                        entry(Position.of(File.A, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.B, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.C, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.D, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.E, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.F, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.G, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.H, Rank.TWO), new StartingPawn(Color.WHITE, PieceType.PAWN)),
+                        entry(Position.of(File.A, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.B, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.C, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.D, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.E, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.F, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.G, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN)),
+                        entry(Position.of(File.H, Rank.SEVEN), new StartingPawn(Color.BLACK, PieceType.PAWN))
+                );
     }
 }

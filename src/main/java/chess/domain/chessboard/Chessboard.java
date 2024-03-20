@@ -1,68 +1,67 @@
 package chess.domain.chessboard;
 
-import java.util.List;
+import static chess.domain.attribute.Color.BLACK;
+import static chess.domain.attribute.Color.WHITE;
+import static chess.domain.piece.PieceType.BISHOP;
+import static chess.domain.piece.PieceType.KING;
+import static chess.domain.piece.PieceType.KNIGHT;
+import static chess.domain.piece.PieceType.PAWN;
+import static chess.domain.piece.PieceType.QUEEN;
+import static chess.domain.piece.PieceType.ROOK;
 
-import chess.domain.chessboard.attribute.File;
-import chess.domain.chessboard.attribute.Rank;
-import chess.domain.chessboard.attribute.Square;
-import chess.domain.chessboard.attribute.Squares;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import chess.domain.attribute.Color;
+import chess.domain.attribute.Position;
+import chess.domain.piece.Bishop;
+import chess.domain.piece.King;
+import chess.domain.piece.Knight;
 import chess.domain.piece.Piece;
-import chess.domain.piece.attribute.Position;
+import chess.domain.piece.PieceType;
+import chess.domain.piece.Queen;
+import chess.domain.piece.Rook;
+import chess.domain.piece.StartingPawn;
 
 public class Chessboard {
 
-    private final List<Squares> chessboard;
+    private final Map<Position, Piece> chessboard;
 
-    protected Chessboard(final List<Squares> chessboard) {
+    private Chessboard(final Map<Position, Piece> chessboard) {
         this.chessboard = chessboard;
     }
 
-    public static boolean isInBoard(final int column, final int row) {
-        return File.isInRange(column) && Rank.isInRange(row);
+    public static Chessboard create() {
+        Map<Position, Piece> chessboard = new HashMap<>();
+        Set<Piece> pieces = new HashSet<>();
+        pieces.addAll(createPieces(WHITE));
+        pieces.addAll(createPieces(BLACK));
+        pieces.forEach(piece -> putPieces(chessboard, piece));
+        return new Chessboard(chessboard);
     }
 
-    public void move(final Position source, final Position target) {
-        validateSource(source);
-        Piece sourcePiece = squareIn(source).piece();
-        Piece targetPiece = sourcePiece.move(this, target);
-        remove(source);
-        put(target, targetPiece);
-    }
-
-    private void validateSource(final Position position) {
-        if (isEmpty(position)) {
-            throw new IllegalArgumentException("해당 위치에 기물이 존재하지 않습니다: %s".formatted(position));
+    private static void putPieces(final Map<Position, Piece> chessboard, final Piece piece) {
+        PieceType pieceType = piece.getPieceType();
+        for (int index = 0; index < pieceType.getCount(); index++) {
+            Position position = pieceType.startPositionOf(piece.getColor(), index);
+            chessboard.put(position, piece);
         }
     }
 
-    public boolean isEmpty(final Position position) {
-        return squareIn(position).isEmpty();
+    private static Set<Piece> createPieces(final Color color) {
+        Set<Piece> pieces = new HashSet<>();
+        pieces.add(new King(color, KING));
+        pieces.add(new Queen(color, QUEEN));
+        pieces.add(new Bishop(color, BISHOP));
+        pieces.add(new Knight(color, KNIGHT));
+        pieces.add(new Rook(color, ROOK));
+        pieces.add(new StartingPawn(color, PAWN));
+        return pieces;
     }
 
-    private void remove(final Position position) {
-        Rank rank = position.rank();
-        Squares squares = chessboard.get(rank.toRow());
-        squares.remove(position);
-    }
-
-    private void put(final Position position, final Piece piece) {
-        Squares squares = squaresIn(piece.position());
-        squares.put(position, piece);
-    }
-
-    public Square squareIn(final Position position) {
-        Squares squares = squaresIn(position);
-        return squares.squareIn(position);
-    }
-
-    private Squares squaresIn(final Position position) {
-        Rank rank = position.rank();
-        return chessboard.get(rank.toRow());
-    }
-
-    public List<List<Square>> getSquares() {
-        return List.copyOf(chessboard.stream()
-                .map(Squares::getSquares)
-                .toList());
+    public Map<Position, Piece> getChessboard() {
+        return Map.copyOf(chessboard);
     }
 }
