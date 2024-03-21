@@ -1,31 +1,44 @@
 package chess.view.command;
 
-public class Command {
+import java.util.Arrays;
 
-    private final CommandType commandType;
-    private final String description;
+public enum Command {
 
-    public Command(final CommandType commandType, final String description) {
-        this.commandType = commandType;
-        this.description = description;
+    START("start", "start"),
+    MOVE("move", "^move [a-h][1-8] [a-h][1-8]$"),
+    END("end", "end")
+    ;
+
+    private final String message;
+    private final String pattern;
+
+    Command(final String message, final String pattern) {
+        this.message = message;
+        this.pattern = pattern;
     }
 
-    public MoveCommand toMoveCommand() {
-        if (isMove()) {
-            return new MoveCommand(description);
-        }
-        throw new IllegalStateException("이동 명령어에서만 실행할 수 있습니다.");
+    public static Command of(final String input) {
+        return Arrays.stream(values())
+                .filter(command -> input.matches(command.pattern))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "존재하지 않는 명령어입니다. 제시된 명령어를 입력하세요: %s".formatted(input)));
     }
 
-    public boolean isStart() {
-        return commandType == CommandType.START;
+    public static boolean isStart(final String input) {
+        return input.matches(START.pattern);
     }
 
-    public boolean isEnd() {
-        return commandType == CommandType.END;
+    public static boolean isEnd(final String input) {
+        return input.matches(END.pattern);
     }
 
-    public boolean isMove() {
-        return commandType == CommandType.MOVE;
+    public static boolean isMove(final String input) {
+        return input.matches(MOVE.pattern);
     }
+
+    public String getMessage() {
+        return message;
+    }
+
 }

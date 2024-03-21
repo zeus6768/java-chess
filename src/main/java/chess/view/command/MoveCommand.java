@@ -2,24 +2,24 @@ package chess.view.command;
 
 import java.util.List;
 
-import chess.domain.piece.attribute.Position;
+import chess.domain.attribute.Square;
 
 public class MoveCommand {
 
-    private final Position source;
-    private final Position target;
+    private final Square source;
+    private final Square target;
 
     public MoveCommand(final String input) {
         List<String> command = List.of(input.split(" "));
-        this.source = Position.from(command.get(1));
-        this.target = Position.from(command.get(2));
+        this.source = Square.of(command.get(1));
+        this.target = Square.of(command.get(2));
     }
 
-    public Position getSource() {
+    public Square source() {
         return source;
     }
 
-    public Position getTarget() {
+    public Square target() {
         return target;
     }
 }
