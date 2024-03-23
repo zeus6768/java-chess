@@ -1,31 +1,27 @@
 package chess.domain.piece.attribute;
 
-import static chess.domain.chessboard.Chessboard.isInBoard;
-
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import chess.domain.chessboard.attribute.Direction;
 import chess.domain.chessboard.attribute.File;
 import chess.domain.chessboard.attribute.Rank;
+import chess.domain.chessboard.attribute.Direction;
 
 public class Position {
 
-    private static final String PATTERN = "^[a-h][1-8]$";
+    private static final Map<String, Position> POSITIONS = new HashMap<>();
 
     private final File file;
     private final Rank rank;
 
-    protected Position(final File file, final Rank rank) {
+    private Position(final File file, final Rank rank) {
         this.file = file;
         this.rank = rank;
     }
 
-    public static Position from(final String position) {
-        if (!position.matches(PATTERN)) {
-            throw new IllegalArgumentException(
-                    "잘못된 형식입니다. 파일은 a~h, 랭크는 1~8입니다. (예: a8, f4): %s".formatted(position));
-        }
+    public static Position of(final String position) {
         return of(File.from(position.charAt(0)), Rank.from(position.charAt(1)));
     }
 
@@ -34,24 +30,39 @@ public class Position {
     }
 
     public static Position of(final File file, final Rank rank) {
-        return Positions.get(file, rank);
+        if (POSITIONS.isEmpty()) {
+            initializePositions();
+        }
+        return POSITIONS.get(keyOf(file, rank));
+    }
+
+    private static void initializePositions() {
+        for (final Rank rank : Rank.values()) {
+            putPositions(rank);
+        }
+    }
+
+    private static void putPositions(final Rank rank) {
+        for (final File file : File.values()) {
+            POSITIONS.put(keyOf(file, rank), new Position(file, rank));
+        }
+    }
+
+    private static String keyOf(final File file, final Rank rank) {
+        return file.name() + rank.name();
+    }
+
+    public static boolean isInBoard(final int column, final int row) {
+        return File.isInRange(column) && Rank.isInRange(row);
     }
 
     public Optional<Position> moveTo(final Direction direction) {
-        int row = rank.toRow() + direction.row();
-        int column = file.toColumn() + direction.column();
+        int row = rank.toRow() + direction.getRow();
+        int column = file.toColumn() + direction.getColumn();
         if (isInBoard(column, row)) {
             return Optional.of(Position.of(File.from(column), Rank.from(row)));
         }
         return Optional.empty();
-    }
-
-    public Optional<Position> after(final Movement movement) {
-        Optional<Position> position = Optional.of(this);
-        for (Direction direction : movement.directions()) {
-            position = position.flatMap(presentPosition -> presentPosition.moveTo(direction));
-        }
-        return position;
     }
 
     public File file() {
@@ -79,6 +90,9 @@ public class Position {
 
     @Override
     public String toString() {
-        return file.name() + rank.toString();
+        return "Position{" +
+                "file=" + file +
+                ", rank=" + rank +
+                '}';
     }
 }

@@ -7,8 +7,8 @@ public enum Rank {
 
     EIGHT, SEVEN, SIX, FIVE, FOUR, THREE, TWO, ONE;
 
-    private static final int RANK_MIN = 1;
     private static final int RANK_MAX = 8;
+    private static final int RANK_MIN = 1;
 
     public static Rank from(final char value) {
         return from(String.valueOf(value));
@@ -31,15 +31,10 @@ public enum Rank {
     }
 
     public static boolean isInRange(final int column) {
-        return EIGHT.toRow() <= column && column <= ONE.toRow();
+        return RANK_MIN <= column && column <= RANK_MAX;
     }
 
     public int toRow() {
         return ordinal();
-    }
-
-    @Override
-    public String toString() {
-        return String.valueOf(RANK_MAX - toRow());
     }
 }
