@@ -1,36 +1,30 @@
 package chess.domain.piece;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.stream.Stream;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Test;
 
+import chess.domain.chessboard.Chessboard;
 import chess.domain.piece.attribute.Color;
 import chess.domain.piece.attribute.Position;
 
 class StartingPawnTest {
+    @DisplayName("시작 위치의 폰이 이동한다.")
+    @Test
+    void move() {
+        Piece sut = new StartingPawn(Color.WHITE, Position.from("d2"));
+        Position actual = sut.move(Chessboard.empty(), Position.from("d4")).position();
+        assertThat(actual).isEqualTo(Position.from("d4"));
+    }
 
-	private static final String INITIAL_POSITION = "d2";
-
-	static Stream<Arguments> move() {
-		return Stream.of(
-				Arguments.of(Position.from("c3"), Position.from("c3")),
-				Arguments.of(Position.from("d3"), Position.from("d3")),
-				Arguments.of(Position.from("d4"), Position.from("d4")),
-				Arguments.of(Position.from("e3"), Position.from("e3"))
-		);
-	}
-
-	@DisplayName("시작 위치의 폰이 이동한다.")
-	@MethodSource
-	@ParameterizedTest
-	void move(Position target, Position expected) {
-		Piece sut = new StartingPawn(Color.WHITE, Position.from(INITIAL_POSITION));
-		Position actual = sut.move(target).position();
-		assertThat(actual).isEqualTo(expected);
-	}
+    @DisplayName("이동할 수 없는 위치를 입력받으면 예외를 발생한다.")
+    @Test
+    void moveException() {
+        Piece sut = new StartingPawn(Color.WHITE, Position.from("d2"));
+        assertThatCode(() -> sut.move(Chessboard.empty(), Position.from("e3")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이동할 수 없는 위치입니다: E3");
+    }
 }
