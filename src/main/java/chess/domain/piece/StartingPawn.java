@@ -16,17 +16,17 @@ import chess.domain.piece.attribute.Positions;
 
 public class StartingPawn extends AbstractPawn {
 
-    private static final Set<Position> WHITE_INITIAL_POSITIONS = Positions.of(
+    private static final Set<Position> INITIAL_POSITIONS_WHITE = Positions.of(
             "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2");
-    private static final Set<Position> BLACK_INITIAL_POSITIONS = Positions.of(
+    private static final Set<Position> INITIAL_POSITIONS_BLACK = Positions.of(
             "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7");
 
-    private static final Set<Movement> POSSIBLE_MOVEMENTS_WHITE = Set.of(
+    private static final Set<Movement> WHITE_POSSIBLE_MOVEMENTS = Set.of(
             Movement.of(UP, UP),
             Movement.of(UP)
     );
 
-    private static final Set<Movement> POSSIBLE_MOVEMENTS_BLACK = Set.of(
+    private static final Set<Movement> BLACK_POSSIBLE_MOVEMENTS = Set.of(
             Movement.of(DOWN, DOWN),
             Movement.of(DOWN)
     );
@@ -37,9 +37,9 @@ public class StartingPawn extends AbstractPawn {
 
     public static Set<StartingPawn> ofInitialPositions(final Color color) {
         if (color.isBlack()) {
-            return initialPiecesOf(BLACK_INITIAL_POSITIONS, BLACK, StartingPawn::new);
+            return initialPiecesOf(INITIAL_POSITIONS_BLACK, BLACK, StartingPawn::new);
         }
-        return initialPiecesOf(WHITE_INITIAL_POSITIONS, WHITE, StartingPawn::new);
+        return initialPiecesOf(INITIAL_POSITIONS_WHITE, WHITE, StartingPawn::new);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class StartingPawn extends AbstractPawn {
         Set<Position> positions = new HashSet<>();
         positions.addAll(attackablePositions(chessboard, possibleAttacksBy(color())));
         positions.addAll(movablePositions(chessboard,
-                possibleMovementsBy(color(), POSSIBLE_MOVEMENTS_WHITE, POSSIBLE_MOVEMENTS_BLACK)));
+                possibleMovementsBy(color(), WHITE_POSSIBLE_MOVEMENTS, BLACK_POSSIBLE_MOVEMENTS)));
         validateTarget(positions, target);
         return new Pawn(color(), target);
     }
