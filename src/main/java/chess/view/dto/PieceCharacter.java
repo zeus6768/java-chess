@@ -2,7 +2,6 @@ package chess.view.dto;
 
 import java.util.Arrays;
 
-import chess.domain.chessboard.attribute.Square;
 import chess.domain.piece.AbstractPawn;
 import chess.domain.piece.Bishop;
 import chess.domain.piece.King;
@@ -12,7 +11,7 @@ import chess.domain.piece.Queen;
 import chess.domain.piece.Rook;
 import chess.domain.piece.attribute.Color;
 
-public enum SquareCharacter {
+public enum PieceCharacter {
 
     KING(King.class, "k", "K"),
     QUEEN(Queen.class, "q", "Q"),
@@ -21,23 +20,17 @@ public enum SquareCharacter {
     ROOK(Rook.class, "r", "R"),
     PAWN(AbstractPawn.class, "p", "P");
 
-    private static final String EMPTY = ".";
-
     private final Class<? extends Piece> pieceClass;
     private final String white;
     private final String black;
 
-    <P extends Piece> SquareCharacter(final Class<P> pieceClass, final String white, final String black) {
+    <P extends Piece> PieceCharacter(final Class<P> pieceClass, final String white, final String black) {
         this.pieceClass = pieceClass;
         this.white = white;
         this.black = black;
     }
 
-    public static String from(final Square square) {
-        if (square.isEmpty()) {
-            return EMPTY;
-        }
-        Piece piece = square.piece();
+    public static String of(final Piece piece) {
         return Arrays.stream(values())
                 .filter(pieceType -> pieceType.isAssignableFrom(piece.getClass()))
                 .map(character -> character.valueBy(piece.color()))
