@@ -41,7 +41,7 @@ public abstract class AbstractPawn extends UnslidingPiece {
     protected Set<Position> attackablePositions(final Chessboard chessboard) {
         return possiblePositions(
                 selectByColor(color(), POSSIBLE_ATTACKS_WHITE, POSSIBLE_ATTACKS_BLACK),
-                position -> isAttackable(chessboard.squareIn(position))
+                position -> isAttackable(chessboard, position)
         );
     }
 

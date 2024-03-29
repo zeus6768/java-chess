@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import chess.domain.chessboard.Chessboard;
-import chess.domain.chessboard.attribute.Square;
 import chess.domain.piece.attribute.Color;
 import chess.domain.piece.attribute.Position;
 
@@ -42,9 +41,9 @@ public abstract class Piece {
         }
     }
 
-    protected boolean isAttackable(final Square square) {
-        if (!square.isEmpty()) {
-            Piece piece = square.piece();
+    protected boolean isAttackable(final Chessboard chessboard, final Position position) {
+        if (chessboard.isPresent(position)) {
+            Piece piece = chessboard.get(position);
             return color() != piece.color();
         }
         return false;

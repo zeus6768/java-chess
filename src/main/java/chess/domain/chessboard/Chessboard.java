@@ -1,19 +1,20 @@
 package chess.domain.chessboard;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import chess.domain.chessboard.attribute.File;
 import chess.domain.chessboard.attribute.Rank;
-import chess.domain.chessboard.attribute.Square;
-import chess.domain.chessboard.attribute.Squares;
 import chess.domain.piece.Piece;
 import chess.domain.piece.attribute.Position;
+import chess.domain.piece.attribute.Positions;
 
 public class Chessboard {
 
-    private final List<Squares> chessboard;
+    private final Map<Position, Piece> chessboard;
 
-    protected Chessboard(final List<Squares> chessboard) {
+    protected Chessboard(final Map<Position, Piece> chessboard) {
         this.chessboard = chessboard;
     }
 
@@ -21,12 +22,13 @@ public class Chessboard {
         return File.isInRange(column) && Rank.isInRange(row);
     }
 
-    public void move(final Position source, final Position target) {
+    public Piece move(final Position source, final Position target) {
         validateSource(source);
-        Piece sourcePiece = squareIn(source).piece();
+        Piece sourcePiece = chessboard.get(source);
         Piece targetPiece = sourcePiece.move(this, target);
         remove(source);
         put(target, targetPiece);
+        return targetPiece;
     }
 
     private void validateSource(final Position position) {
@@ -36,33 +38,40 @@ public class Chessboard {
     }
 
     public boolean isEmpty(final Position position) {
-        return squareIn(position).isEmpty();
+        return !isPresent(position);
+    }
+
+    public boolean isPresent(final Position position) {
+        return chessboard.containsKey(position);
+    }
+
+    public Piece get(final Position position) {
+        validateSource(position);
+        return chessboard.get(position);
+    }
+
+    public List<Piece> getAllFrom(final File file) {
+        return Positions.from(file)
+                .stream()
+                .filter(this::isPresent)
+                .map(chessboard::get)
+                .toList();
     }
 
     private void remove(final Position position) {
-        Rank rank = position.rank();
-        Squares squares = chessboard.get(rank.toRow());
-        squares.remove(position);
+        chessboard.remove(position);
     }
 
     private void put(final Position position, final Piece piece) {
-        Squares squares = squaresIn(piece.position());
-        squares.put(position, piece);
+        chessboard.put(position, piece);
     }
 
-    public Square squareIn(final Position position) {
-        Squares squares = squaresIn(position);
-        return squares.squareIn(position);
+    public String toFen() {
+        // Todo: FEN 변환 구현
+        return "";
     }
 
-    private Squares squaresIn(final Position position) {
-        Rank rank = position.rank();
-        return chessboard.get(rank.toRow());
-    }
-
-    public List<List<Square>> getSquares() {
-        return List.copyOf(chessboard.stream()
-                .map(Squares::getSquares)
-                .toList());
+    public Map<Position, Piece> toMap() {
+        return Collections.unmodifiableMap(chessboard);
     }
 }

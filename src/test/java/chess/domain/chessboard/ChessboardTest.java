@@ -10,7 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import chess.domain.chessboard.attribute.Square;
 import chess.domain.piece.Knight;
 import chess.domain.piece.Pawn;
 import chess.domain.piece.Piece;
@@ -32,9 +31,7 @@ class ChessboardTest {
     @ParameterizedTest
     <P extends Piece> void move(Position source, Position target, Class<P> pieceClass) {
         Chessboard sut = ChessboardFactory.create();
-        sut.move(source, target);
-        Square square = sut.squareIn(target);
-        Piece piece = square.piece();
+        Piece piece = sut.move(source, target);
         assertAll(
                 () -> assertThat(piece).isInstanceOf(pieceClass),
                 () -> assertThat(piece.position()).isEqualTo(target)
