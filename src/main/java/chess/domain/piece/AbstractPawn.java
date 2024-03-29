@@ -18,6 +18,11 @@ import chess.domain.piece.attribute.Position;
 
 public abstract class AbstractPawn extends UnslidingPiece {
 
+    // TODO: 클래스명 변경 AbstractPawn -> Pawn, Pawn -> DefaultPawn
+
+    private static final double SCORE = 1;
+    private static final double SCORE_IF_OVERLAPPED = 1;
+
     protected static final Set<Movement> POSSIBLE_ATTACKS_WHITE = Set.of(
             Movement.of(UP_LEFT),
             Movement.of(UP_RIGHT)
@@ -38,6 +43,14 @@ public abstract class AbstractPawn extends UnslidingPiece {
         ).collect(Collectors.toUnmodifiableSet());
     }
 
+    private Set<Position> possiblePositions(final Set<Movement> movements, final Predicate<Position> predicate) {
+        return movements.stream()
+                .map(movement -> position().after(movement))
+                .flatMap(Optional::stream)
+                .filter(predicate)
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
     protected Set<Position> attackablePositions(final Chessboard chessboard) {
         return possiblePositions(
                 selectByColor(color(), POSSIBLE_ATTACKS_WHITE, POSSIBLE_ATTACKS_BLACK),
@@ -45,11 +58,16 @@ public abstract class AbstractPawn extends UnslidingPiece {
         );
     }
 
-    private Set<Position> possiblePositions(final Set<Movement> movements, final Predicate<Position> predicate) {
-        return movements.stream()
-                .map(movement -> position().after(movement))
-                .flatMap(Optional::stream)
-                .filter(predicate)
-                .collect(Collectors.toUnmodifiableSet());
+    @Override
+    public boolean isPawn() {
+        return true;
+    }
+
+    @Override
+    public double score(final boolean isOverlapped) {
+        if (isOverlapped) {
+            return SCORE_IF_OVERLAPPED;
+        }
+        return SCORE;
     }
 }
