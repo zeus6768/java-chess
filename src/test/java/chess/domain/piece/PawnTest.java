@@ -72,7 +72,6 @@ class PawnTest {
     void movablePositions(Color color, Chessboard chessboard, Position source, Set<Position> expected) {
         Piece sut = new Pawn(color, source);
         var actual = sut.movablePositions(chessboard);
-        System.out.println(actual);
         assertThat(actual).containsAll(expected);
     }
 }
