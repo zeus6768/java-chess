@@ -57,7 +57,17 @@ public abstract class Piece {
         return position;
     }
 
+    public boolean isPawn() {
+        return false;
+    }
+
+    public double score() {
+        return score(false);
+    }
+
     public abstract Piece move(final Chessboard chessboard, final Position target);
 
     public abstract Set<Position> movablePositions(final Chessboard chessboard);
+
+    public abstract double score(final boolean isOverlapped);
 }
