@@ -1,6 +1,5 @@
 package chess.domain.chessboard;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -69,9 +68,5 @@ public class Chessboard {
     public String toFen() {
         // Todo: FEN 변환 구현
         return "";
-    }
-
-    public Map<Position, Piece> toMap() {
-        return Collections.unmodifiableMap(chessboard);
     }
 }
