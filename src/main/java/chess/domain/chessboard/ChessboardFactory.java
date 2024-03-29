@@ -1,12 +1,10 @@
 package chess.domain.chessboard;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
-import chess.domain.chessboard.attribute.Rank;
-import chess.domain.chessboard.attribute.Squares;
 import chess.domain.piece.Bishop;
 import chess.domain.piece.King;
 import chess.domain.piece.Knight;
@@ -23,39 +21,16 @@ public class ChessboardFactory {
     }
 
     public static Chessboard empty() {
-        return new Chessboard(emptyBoard());
+        return new Chessboard(new HashMap<>());
     }
 
     public static Chessboard create() {
-        List<Squares> chessboard = emptyBoard();
-        putInitialPieces(chessboard);
-        return new Chessboard(chessboard);
-    }
-
-    public static Chessboard of(final Piece... pieces) {
-        List<Squares> chessboard = emptyBoard();
-        for (final Piece piece : pieces) {
-            Position position = piece.position();
-            Rank rank = position.rank();
-            Squares squares = chessboard.get(rank.toRow());
-            squares.put(position, piece);
-        }
-        return new Chessboard(chessboard);
-    }
-
-    private static List<Squares> emptyBoard() {
-        return Arrays.stream(Rank.values())
-                .map(__ -> Squares.empty())
-                .toList();
-    }
-
-    private static void putInitialPieces(final List<Squares> chessboard) {
+        Map<Position, Piece> chessboard = new HashMap<>();
         for (final Piece piece : initialPieces()) {
             Position position = piece.position();
-            Rank rank = position.rank();
-            Squares squares = chessboard.get(rank.toRow());
-            squares.put(position, piece);
+            chessboard.put(position, piece);
         }
+        return new Chessboard(chessboard);
     }
 
     private static Set<Piece> initialPieces() {

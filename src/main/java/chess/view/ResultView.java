@@ -2,8 +2,6 @@ package chess.view;
 
 import static chess.view.command.CommandType.END;
 
-import java.util.List;
-
 import chess.view.dto.ChessboardDto;
 
 public class ResultView {
@@ -20,8 +18,6 @@ public class ResultView {
     }
 
     public void printBoard(final ChessboardDto chessboardDto) {
-        List<List<String>> chessboard = chessboardDto.get();
-        chessboard.forEach(positions -> System.out.println(String.join("", positions)));
-        System.out.println();
+        System.out.println(chessboardDto.getChessboard());
     }
 }
