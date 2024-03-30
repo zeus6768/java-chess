@@ -5,6 +5,7 @@ import java.util.List;
 
 import chess.domain.chessboard.Chessboard;
 import chess.domain.chessboard.attribute.File;
+import chess.domain.piece.Pawn;
 import chess.domain.piece.Piece;
 import chess.domain.piece.attribute.Color;
 
@@ -30,7 +31,7 @@ public class Scoreboard {
 
     private double sumScoreExceptPawn(final List<Piece> pieces, final Color color) {
         return pieces.stream()
-                .filter(piece -> !piece.isPawn())
+                .filter(piece -> !(piece instanceof Pawn))
                 .filter(piece -> piece.color() == color)
                 .mapToDouble(Piece::score)
                 .sum();
@@ -46,7 +47,7 @@ public class Scoreboard {
     private double sumPawnScore(final List<Piece> piecesInFile, final Color color) {
         final boolean isOverlapped = isPawnOverlapped(piecesInFile);
         return piecesInFile.stream()
-                .filter(Piece::isPawn)
+                .filter(Pawn.class::isInstance)
                 .filter(piece -> piece.color() == color)
                 .mapToDouble(piece -> piece.score(isOverlapped))
                 .sum();
@@ -54,7 +55,7 @@ public class Scoreboard {
 
     private boolean isPawnOverlapped(final List<Piece> piecesInFile) {
         return piecesInFile.stream()
-                .filter(Piece::isPawn)
+                .filter(Pawn.class::isInstance)
                 .count() >= OVERLAPPED_PAWN_COUNT_THRESHOLD;
     }
 }

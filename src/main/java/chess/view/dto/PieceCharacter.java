@@ -2,10 +2,10 @@ package chess.view.dto;
 
 import java.util.Arrays;
 
-import chess.domain.piece.AbstractPawn;
 import chess.domain.piece.Bishop;
 import chess.domain.piece.King;
 import chess.domain.piece.Knight;
+import chess.domain.piece.Pawn;
 import chess.domain.piece.Piece;
 import chess.domain.piece.Queen;
 import chess.domain.piece.Rook;
@@ -18,7 +18,7 @@ public enum PieceCharacter {
     BISHOP(Bishop.class, "b", "B"),
     KNIGHT(Knight.class, "n", "N"),
     ROOK(Rook.class, "r", "R"),
-    PAWN(AbstractPawn.class, "p", "P");
+    PAWN(Pawn.class, "p", "P");
 
     private final Class<? extends Piece> pieceClass;
     private final String white;

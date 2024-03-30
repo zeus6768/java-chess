@@ -10,8 +10,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import chess.domain.piece.DefaultPawn;
 import chess.domain.piece.Knight;
-import chess.domain.piece.Pawn;
 import chess.domain.piece.Piece;
 import chess.domain.piece.attribute.Position;
 
@@ -19,8 +19,8 @@ class ChessboardTest {
 
     static Stream<Arguments> move() {
         return Stream.of(
-                Arguments.of(Position.from("a2"), Position.from("a3"), Pawn.class),
-                Arguments.of(Position.from("e2"), Position.from("e4"), Pawn.class),
+                Arguments.of(Position.from("a2"), Position.from("a3"), DefaultPawn.class),
+                Arguments.of(Position.from("e2"), Position.from("e4"), DefaultPawn.class),
                 Arguments.of(Position.from("b1"), Position.from("c3"), Knight.class),
                 Arguments.of(Position.from("g8"), Position.from("f6"), Knight.class)
         );
