@@ -5,7 +5,9 @@ import java.util.Map;
 
 import chess.domain.chessboard.attribute.File;
 import chess.domain.chessboard.attribute.Rank;
+import chess.domain.piece.King;
 import chess.domain.piece.Piece;
+import chess.domain.piece.attribute.Color;
 import chess.domain.piece.attribute.Position;
 import chess.domain.piece.attribute.Positions;
 
@@ -22,12 +24,15 @@ public class Chessboard {
     }
 
     public Piece move(final Position source, final Position target) {
-        validateSource(source);
-        Piece sourcePiece = chessboard.get(source);
-        Piece targetPiece = sourcePiece.move(this, target);
+        Piece piece = get(source).move(this, target);
         remove(source);
-        put(target, targetPiece);
-        return targetPiece;
+        put(target, piece);
+        return piece;
+    }
+
+    public Piece get(final Position position) {
+        validateSource(position);
+        return chessboard.get(position);
     }
 
     private void validateSource(final Position position) {
@@ -44,9 +49,12 @@ public class Chessboard {
         return chessboard.containsKey(position);
     }
 
-    public Piece get(final Position position) {
-        validateSource(position);
-        return chessboard.get(position);
+    private void remove(final Position position) {
+        chessboard.remove(position);
+    }
+
+    private void put(final Position position, final Piece piece) {
+        chessboard.put(position, piece);
     }
 
     public List<Piece> getAllFrom(final File file) {
@@ -57,16 +65,22 @@ public class Chessboard {
                 .toList();
     }
 
-    private void remove(final Position position) {
-        chessboard.remove(position);
+    public boolean isCheckmate() {
+        return chessboard.values()
+                .stream()
+                .filter(King.class::isInstance)
+                .count() == 1;
     }
 
-    private void put(final Position position, final Piece piece) {
-        chessboard.put(position, piece);
-    }
-
-    public String toFen() {
-        // Todo: FEN 변환 구현
-        return "";
+    public Color winner() {
+        if (!isCheckmate()) {
+            throw new IllegalStateException("체크메이트인 경우에만 승자를 알 수 있습니다.");
+        }
+        return chessboard.values()
+                .stream()
+                .filter(King.class::isInstance)
+                .findFirst()
+                .map(Piece::color)
+                .orElseThrow(IllegalStateException::new);
     }
 }
