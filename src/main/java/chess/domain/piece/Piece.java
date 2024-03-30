@@ -57,10 +57,6 @@ public abstract class Piece {
         return position;
     }
 
-    public boolean isPawn() {
-        return false;
-    }
-
     public double score() {
         return score(false);
     }
