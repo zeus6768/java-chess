@@ -44,4 +44,9 @@ public class Rook extends SlidingPiece {
     public double score(final boolean ignored) {
         return SCORE;
     }
+
+    @Override
+    public String toString() {
+        return "R" + position().toString();
+    }
 }

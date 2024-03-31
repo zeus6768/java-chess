@@ -63,4 +63,9 @@ public abstract class Pawn extends UnslidingPiece {
         }
         return SCORE;
     }
+
+    @Override
+    public String toString() {
+        return "P" + position().toString();
+    }
 }

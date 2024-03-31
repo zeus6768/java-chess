@@ -44,4 +44,9 @@ public class Bishop extends SlidingPiece {
     public double score(final boolean ignored) {
         return SCORE;
     }
+
+    @Override
+    public String toString() {
+        return "B" + position().toString();
+    }
 }

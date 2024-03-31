@@ -58,4 +58,9 @@ public class Knight extends UnslidingPiece {
     public double score(final boolean ignored) {
         return SCORE;
     }
+
+    @Override
+    public String toString() {
+        return "N" + position().toString();
+    }
 }

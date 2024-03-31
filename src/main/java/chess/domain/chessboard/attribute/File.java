@@ -40,4 +40,9 @@ public enum File {
     public int toColumn() {
         return ordinal();
     }
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }
