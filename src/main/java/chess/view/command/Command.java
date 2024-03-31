@@ -32,4 +32,8 @@ public class Command {
     public boolean isStatus() {
         return commandType == CommandType.STATUS;
     }
+
+    public boolean isLoad() {
+        return commandType == CommandType.LOAD;
+    }
 }
