@@ -3,15 +3,17 @@ package chess.fen;
 import static chess.fen.PieceFenMapper.fenFrom;
 import static chess.fen.PieceFenMapper.pieceOf;
 
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 
 import chess.domain.chessboard.Chessboard;
-import chess.domain.chessboard.ChessboardFactory;
+import chess.domain.chessboard.attribute.File;
 import chess.domain.chessboard.attribute.Rank;
 import chess.domain.piece.Piece;
+import chess.domain.piece.attribute.Position;
 
 public class Fen {
 
@@ -27,31 +29,46 @@ public class Fen {
     }
 
     public static Fen from(final Chessboard chessboard) {
-        StringBuilder fen = new StringBuilder();
+        StringJoiner fen = new StringJoiner("/");
         for (final Rank rank : Rank.values()) {
-            List<Piece> pieces = chessboard.getAllFrom(rank);
-            appendFens(pieces, fen);
-            fen.append('/');
+            StringBuilder row = rankToFen(chessboard, rank);
+            fen.add(row);
         }
         return new Fen(fen.toString());
     }
 
-    private static void appendFens(final List<Piece> pieces, final StringBuilder fen) {
-        for (final Piece piece : pieces) {
-            fen.append(fenFrom(piece));
+    private static StringBuilder rankToFen(final Chessboard chessboard, final Rank rank) {
+        StringBuilder row = new StringBuilder();
+        int emptySquareCount = 0;
+        for (final File file : File.values()) {
+            Position position = Position.of(file, rank);
+            if (chessboard.isPresent(position)) {
+                if (emptySquareCount > 0) {
+                    row.append(emptySquareCount);
+                    emptySquareCount = 0;
+                }
+                Piece piece = chessboard.get(position);
+                row.append(fenFrom(piece));
+            } else {
+                emptySquareCount++;
+            }
         }
+        if (emptySquareCount > 0) {
+            row.append(emptySquareCount);
+        }
+        return row;
     }
 
-    public Chessboard toChessboard() {
+    public Set<Piece> toPieces() {
         Set<Piece> pieces = new HashSet<>();
         String[] piecesByFen = fen.split("/");
         for (int row = 0; row < piecesByFen.length; row++) {
-            pieces.addAll(toPieces(piecesByFen[row], row));
+            pieces.addAll(toPieceRow(piecesByFen[row], row));
         }
-        return ChessboardFactory.from(pieces);
+        return Collections.unmodifiableSet(pieces);
     }
 
-    private Set<Piece> toPieces(final String rowByFen, final int row) {
+    private Set<Piece> toPieceRow(final String rowByFen, final int row) {
         Set<Piece> pieces = new HashSet<>();
         int column = 0;
         for (final char squareByFen : rowByFen.toCharArray()) {

@@ -13,6 +13,7 @@ import chess.domain.piece.Queen;
 import chess.domain.piece.Rook;
 import chess.domain.piece.StartingPawn;
 import chess.domain.piece.attribute.Color;
+import chess.fen.Fen;
 
 public class ChessboardFactory {
 
@@ -25,6 +26,10 @@ public class ChessboardFactory {
 
     public static Chessboard create() {
         return from(initialPieces());
+    }
+
+    public static Chessboard from(final Fen fen) {
+        return from(fen.toPieces());
     }
 
     public static Chessboard from(final Set<Piece> pieces) {
