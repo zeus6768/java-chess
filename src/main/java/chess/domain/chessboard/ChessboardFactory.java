@@ -2,8 +2,8 @@ package chess.domain.chessboard;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import chess.domain.piece.Bishop;
 import chess.domain.piece.King;
@@ -13,7 +13,6 @@ import chess.domain.piece.Queen;
 import chess.domain.piece.Rook;
 import chess.domain.piece.StartingPawn;
 import chess.domain.piece.attribute.Color;
-import chess.domain.piece.attribute.Position;
 
 public class ChessboardFactory {
 
@@ -25,12 +24,12 @@ public class ChessboardFactory {
     }
 
     public static Chessboard create() {
-        Map<Position, Piece> chessboard = new HashMap<>();
-        for (final Piece piece : initialPieces()) {
-            Position position = piece.position();
-            chessboard.put(position, piece);
-        }
-        return new Chessboard(chessboard);
+        return from(initialPieces());
+    }
+
+    public static Chessboard from(final Set<Piece> pieces) {
+        return new Chessboard(pieces.stream()
+                .collect(Collectors.toMap(Piece::position, piece -> piece)));
     }
 
     private static Set<Piece> initialPieces() {
