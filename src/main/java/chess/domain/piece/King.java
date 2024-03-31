@@ -44,4 +44,9 @@ public class King extends UnslidingPiece {
     public double score(final boolean ignored) {
         return SCORE;
     }
+
+    @Override
+    public String toString() {
+        return "K" + position().toString();
+    }
 }

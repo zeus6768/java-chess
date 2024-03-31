@@ -39,4 +39,9 @@ public class Queen extends SlidingPiece {
     public double score(final boolean ignored) {
         return SCORE;
     }
+
+    @Override
+    public String toString() {
+        return "Q" + position().toString();
+    }
 }

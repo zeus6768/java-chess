@@ -42,6 +42,10 @@ public class StartingPawn extends Pawn {
         );
     }
 
+    public static Set<Position> startingPositions(final Color color) {
+        return selectByColor(color, WHITE_INITIAL_POSITIONS, BLACK_INITIAL_POSITIONS);
+    }
+
     @Override
     public Piece move(final Chessboard chessboard, final Position target) {
         validateTarget(movablePositions(chessboard), target);
