@@ -5,6 +5,7 @@ import static chess.fen.PieceFenMapper.pieceOf;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import chess.domain.chessboard.Chessboard;
@@ -65,5 +66,20 @@ public class Fen {
             return Character.getNumericValue(fen);
         }
         return 1;
+    }
+
+    public String value() {
+        return fen;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        return object instanceof Fen other
+                && fen.equals(other.fen);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fen);
     }
 }
