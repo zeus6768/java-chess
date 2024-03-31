@@ -65,6 +65,14 @@ public class Chessboard {
                 .toList();
     }
 
+    public List<Piece> getAllFrom(final Rank rank) {
+        return Positions.from(rank)
+                .stream()
+                .filter(this::isPresent)
+                .map(chessboard::get)
+                .toList();
+    }
+
     public boolean isCheckmate() {
         return chessboard.values()
                 .stream()
