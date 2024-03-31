@@ -7,7 +7,8 @@ public enum CommandType {
     START("start", "^start$"),
     MOVE("move", "^move [a-h][1-8] [a-h][1-8]$"),
     END("end", "^end$"),
-    STATUS("status", "^status$");
+    STATUS("status", "^status$"),
+    LOAD("load", "^load$");
 
     private final String message;
     private final String pattern;

@@ -31,32 +31,33 @@ public class Fen {
     public static Fen from(final Chessboard chessboard) {
         StringJoiner fen = new StringJoiner("/");
         for (final Rank rank : Rank.values()) {
-            StringBuilder row = rankToFen(chessboard, rank);
-            fen.add(row);
+            fen.add(rowToFen(chessboard, rank));
         }
         return new Fen(fen.toString());
     }
 
-    private static StringBuilder rankToFen(final Chessboard chessboard, final Rank rank) {
+    private static StringBuilder rowToFen(final Chessboard chessboard, final Rank rank) {
+        // TODO: 들여쓰기 1단계
         StringBuilder row = new StringBuilder();
         int emptySquareCount = 0;
         for (final File file : File.values()) {
             Position position = Position.of(file, rank);
-            if (chessboard.isPresent(position)) {
-                if (emptySquareCount > 0) {
-                    row.append(emptySquareCount);
-                    emptySquareCount = 0;
-                }
-                Piece piece = chessboard.get(position);
-                row.append(fenFrom(piece));
-            } else {
+            if (chessboard.isEmpty(position)) {
                 emptySquareCount++;
+                continue;
             }
+            emptySquareCount = appendCount(emptySquareCount, row);
+            row.append(fenFrom(chessboard.get(position)));
         }
+        appendCount(emptySquareCount, row);
+        return row;
+    }
+
+    private static int appendCount(final int emptySquareCount, final StringBuilder row) {
         if (emptySquareCount > 0) {
             row.append(emptySquareCount);
         }
-        return row;
+        return 0;
     }
 
     public Set<Piece> toPieces() {
