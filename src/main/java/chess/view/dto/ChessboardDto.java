@@ -26,7 +26,7 @@ public class ChessboardDto {
             final StringBuilder squares
     ) {
         for (final File file : File.values()) {
-            Position position = Position.of(rank, file);
+            Position position = Position.of(file, rank);
             appendPieceCharacter(chessboard, squares, position);
         }
         squares.append('\n');
@@ -42,7 +42,7 @@ public class ChessboardDto {
             return;
         }
         Piece piece = chessboard.get(position);
-        squares.append(PieceCharacter.of(piece));
+        squares.append(PieceCharacterMapper.toCharacter(piece));
     }
 
     public String getChessboard() {
