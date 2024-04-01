@@ -77,6 +77,8 @@ public class ChessGame {
 
     private void printResultIfCheckmate(final Chessboard chessboard) {
         if (!chessboard.isCheckmate()) {
+            FenDao fenDao = new FenDao();
+            fenDao.delete();
             return;
         }
         resultView.printCheckmate();
