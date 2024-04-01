@@ -16,6 +16,8 @@ import chess.view.dto.ChessboardDto;
 
 public class ChessGame {
 
+    // TODO: DAO 로직 분리
+
     private final InputView inputView;
     private final ResultView resultView;
 
@@ -55,7 +57,7 @@ public class ChessGame {
 
         }
         Chessboard chessboard = ChessboardFactory.create();
-        fenDao.update(Fen.from(chessboard));
+        fenDao.save(Fen.from(chessboard));
         return chessboard;
     }
 
@@ -77,10 +79,10 @@ public class ChessGame {
 
     private void printResultIfCheckmate(final Chessboard chessboard) {
         if (!chessboard.isCheckmate()) {
-            FenDao fenDao = new FenDao();
-            fenDao.delete();
             return;
         }
+        FenDao fenDao = new FenDao();
+        fenDao.delete();
         resultView.printCheckmate();
         Command command = inputView.askStatusOrEnd();
         if (command.isStatus()) {
