@@ -54,7 +54,6 @@ public class ChessGame {
             Chessboard chessboard = ChessboardFactory.create();
             fenDao.update(Fen.from(chessboard));
             return chessboard;
-
         }
         Chessboard chessboard = ChessboardFactory.create();
         fenDao.save(Fen.from(chessboard));
