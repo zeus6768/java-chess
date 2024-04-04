@@ -29,7 +29,7 @@ class FenDaoTest {
     @Test
     void find() {
         fenDao.save(new Fen("4k2r/6r1/8/8/8/8/3R4/R3K3"));
-        Fen fen = fenDao.find();
+        Fen fen = fenDao.find("1");
         assertThat(fen.value()).isEqualTo("4k2r/6r1/8/8/8/8/3R4/R3K3");
     }
 
@@ -37,7 +37,7 @@ class FenDaoTest {
     void save() {
         Fen fen = new Fen("8/8/8/4p1K1/2k1P3/8/8/8");
         fenDao.save(fen);
-        Fen expected = fenDao.find();
+        Fen expected = fenDao.find("1");
         assertThat(fen).isEqualTo(expected);
     }
 
@@ -46,14 +46,14 @@ class FenDaoTest {
         fenDao.save(new Fen("8/8/8/4p1K1/2k1P3/8/8/8"));
         Fen fen = new Fen("4k2r/6r1/8/8/8/8/3R4/R3K3");
         fenDao.update(fen);
-        Fen expected = fenDao.find();
+        Fen expected = fenDao.find("1");
         assertThat(fen).isEqualTo(expected);
     }
 
     @Test
     void delete() {
         fenDao.delete();
-        assertThat(fenDao.find()).isNull();
+        assertThat(fenDao.find("1")).isNull();
     }
 
     @Test

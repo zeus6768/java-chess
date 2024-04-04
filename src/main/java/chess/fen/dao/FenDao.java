@@ -44,9 +44,10 @@ public class FenDao {
         }
     }
 
-    public Fen find() {
+    public Fen find(final String id) {
         try (final var connection = getConnection()) {
-            final var statement = connection.prepareStatement("SELECT value FROM fen WHERE id=1");
+            final var statement = connection.prepareStatement("SELECT value FROM fen WHERE id=?");
+            statement.setString(1, id);
             final var resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Fen(resultSet.getString("value"));
