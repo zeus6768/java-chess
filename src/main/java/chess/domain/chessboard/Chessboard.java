@@ -13,6 +13,8 @@ import chess.domain.piece.attribute.Positions;
 
 public class Chessboard {
 
+    private static final int CHECKMATE_KING_COUNT = 1;
+
     private final Map<Position, Piece> chessboard;
 
     protected Chessboard(final Map<Position, Piece> chessboard) {
@@ -69,7 +71,7 @@ public class Chessboard {
         return chessboard.values()
                 .stream()
                 .filter(King.class::isInstance)
-                .count() == 1;
+                .count() == CHECKMATE_KING_COUNT;
     }
 
     public Color winner() {
