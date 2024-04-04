@@ -2,10 +2,12 @@ package chess;
 
 import static chess.exception.ExceptionHandler.retry;
 
+import java.util.Optional;
+
 import chess.domain.chessboard.Chessboard;
 import chess.domain.chessboard.ChessboardFactory;
+import chess.domain.chessboard.ChessboardRepository;
 import chess.domain.score.Scoreboard;
-import chess.fen.Fen;
 import chess.fen.dao.FenDao;
 import chess.view.InputView;
 import chess.view.ResultView;
@@ -20,10 +22,12 @@ public class ChessGame {
 
     private final InputView inputView;
     private final ResultView resultView;
+    private final ChessboardRepository repository;
 
-    public ChessGame(final InputView inputView, final ResultView resultView) {
+    public ChessGame(final InputView inputView, final ResultView resultView, final ChessboardRepository repository) {
         this.inputView = inputView;
         this.resultView = resultView;
+        this.repository = repository;
     }
 
     public void run() {
@@ -43,32 +47,24 @@ public class ChessGame {
     }
 
     private Chessboard initializeChessboard() {
-        // TODO: 들여쓰기 1단계, 10줄 이하
-        FenDao fenDao = new FenDao();
-        if (fenDao.exists()) {
-            Command command = inputView.askLoadOrStart();
-            if (command.isLoad()) {
-                Fen fen = fenDao.find("1");
-                return ChessboardFactory.from(fen);
-            }
-            Chessboard chessboard = ChessboardFactory.create();
-            fenDao.update(Fen.from(chessboard));
-            return chessboard;
+        Optional<Chessboard> chessboard = repository.find();
+        if (chessboard.isEmpty()) {
+            return repository.save(ChessboardFactory.create());
         }
-        Chessboard chessboard = ChessboardFactory.create();
-        fenDao.save(Fen.from(chessboard));
-        return chessboard;
+        Command command = inputView.askLoadOrStart();
+        if (command.isLoad()) {
+            return chessboard.get();
+        }
+        return repository.save(ChessboardFactory.create());
     }
 
     private void playByCommand(final Chessboard chessboard, final Command command) {
-        // TODO: 10줄 이하
         if (!command.isMove()) {
             return;
         }
         MoveCommand moveCommand = command.toMoveCommand();
         chessboard.move(moveCommand.getSource(), moveCommand.getTarget());
-        FenDao fenDao = new FenDao();
-        fenDao.update(Fen.from(chessboard));
+        repository.update(chessboard);
         if (chessboard.isCheckmate()) {
             return;
         }

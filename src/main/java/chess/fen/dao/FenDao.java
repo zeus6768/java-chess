@@ -44,10 +44,10 @@ public class FenDao {
         }
     }
 
-    public Fen find(final String id) {
+    public Fen find(final int id) {
         try (final var connection = getConnection()) {
             final var statement = connection.prepareStatement("SELECT value FROM fen WHERE id=?");
-            statement.setString(1, id);
+            statement.setInt(1, id);
             final var resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Fen(resultSet.getString("value"));
@@ -59,10 +59,11 @@ public class FenDao {
         return null;
     }
 
-    public void save(final Fen fen) {
+    public void save(final int id, final Fen fen) {
         try (final var connection = getConnection()) {
-            final var statement = connection.prepareStatement("INSERT INTO fen VALUES (1, ?)");
-            statement.setString(1, fen.value());
+            final var statement = connection.prepareStatement("INSERT INTO fen VALUES (?, ?)");
+            statement.setInt(1, id);
+            statement.setString(2, fen.value());
             statement.execute();
         } catch (SQLException e) {
             System.err.println("DB 연결 오류:" + e.getMessage());
@@ -70,10 +71,11 @@ public class FenDao {
         }
     }
 
-    public void update(final Fen fen) {
+    public void update(final int id, final Fen fen) {
         try (final var connection = getConnection()) {
-            final var statement = connection.prepareStatement("UPDATE fen SET value=? WHERE id=1");
+            final var statement = connection.prepareStatement("UPDATE fen SET value=? WHERE id=?");
             statement.setString(1, fen.value());
+            statement.setInt(2, id);
             statement.execute();
         } catch (SQLException e) {
             System.err.println("DB 연결 오류:" + e.getMessage());
@@ -91,9 +93,10 @@ public class FenDao {
         }
     }
 
-    public boolean exists() {
+    public boolean exists(final int id) {
         try (final var connection = getConnection()) {
-            final var statement = connection.prepareStatement("SELECT EXISTS (SELECT 1 FROM fen)");
+            final var statement = connection.prepareStatement("SELECT EXISTS (SELECT ? FROM fen)");
+            statement.setInt(1, id);
             final var resultSet = statement.executeQuery();
             resultSet.next();
             return resultSet.getBoolean(1);

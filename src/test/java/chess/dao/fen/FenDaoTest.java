@@ -12,6 +12,8 @@ import chess.fen.dao.FenDao;
 
 class FenDaoTest {
 
+    private static final int ID = 1;
+
     private final FenDao fenDao = new FenDao();
 
     @AfterEach
@@ -28,38 +30,38 @@ class FenDaoTest {
 
     @Test
     void find() {
-        fenDao.save(new Fen("4k2r/6r1/8/8/8/8/3R4/R3K3"));
-        Fen fen = fenDao.find("1");
+        fenDao.save(ID, new Fen("4k2r/6r1/8/8/8/8/3R4/R3K3"));
+        Fen fen = fenDao.find(ID);
         assertThat(fen.value()).isEqualTo("4k2r/6r1/8/8/8/8/3R4/R3K3");
     }
 
     @Test
     void save() {
         Fen fen = new Fen("8/8/8/4p1K1/2k1P3/8/8/8");
-        fenDao.save(fen);
-        Fen expected = fenDao.find("1");
+        fenDao.save(ID, fen);
+        Fen expected = fenDao.find(ID);
         assertThat(fen).isEqualTo(expected);
     }
 
     @Test
     void update() {
-        fenDao.save(new Fen("8/8/8/4p1K1/2k1P3/8/8/8"));
+        fenDao.save(ID, new Fen("8/8/8/4p1K1/2k1P3/8/8/8"));
         Fen fen = new Fen("4k2r/6r1/8/8/8/8/3R4/R3K3");
-        fenDao.update(fen);
-        Fen expected = fenDao.find("1");
+        fenDao.update(ID, fen);
+        Fen expected = fenDao.find(ID);
         assertThat(fen).isEqualTo(expected);
     }
 
     @Test
     void delete() {
         fenDao.delete();
-        assertThat(fenDao.find("1")).isNull();
+        assertThat(fenDao.find(ID)).isNull();
     }
 
     @Test
     void exists() {
-        assertThat(fenDao.exists()).isFalse();
-        fenDao.save(new Fen("8/8/8/4p1K1/2k1P3/8/8/8"));
-        assertThat(fenDao.exists()).isTrue();
+        assertThat(fenDao.exists(ID)).isFalse();
+        fenDao.save(ID, new Fen("8/8/8/4p1K1/2k1P3/8/8/8"));
+        assertThat(fenDao.exists(ID)).isTrue();
     }
 }
