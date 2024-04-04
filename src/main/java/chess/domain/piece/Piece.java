@@ -61,6 +61,10 @@ public abstract class Piece {
         return score(false);
     }
 
+    public boolean isPawn() {
+        return this instanceof Pawn;
+    }
+
     public abstract Piece move(final Chessboard chessboard, final Position target);
 
     public abstract Set<Position> movablePositions(final Chessboard chessboard);

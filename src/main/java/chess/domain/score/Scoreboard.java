@@ -31,7 +31,7 @@ public class Scoreboard {
 
     private double sumScoreExceptPawn(final List<Piece> pieces, final Color color) {
         return pieces.stream()
-                .filter(piece -> !(piece instanceof Pawn))
+                .filter(piece -> !piece.isPawn())
                 .filter(piece -> piece.color() == color)
                 .mapToDouble(Piece::score)
                 .sum();
@@ -47,7 +47,7 @@ public class Scoreboard {
     private double sumPawnScore(final List<Piece> piecesInFile, final Color color) {
         final boolean isOverlapped = isPawnOverlapped(piecesInFile);
         return piecesInFile.stream()
-                .filter(Pawn.class::isInstance)
+                .filter(Piece::isPawn)
                 .filter(piece -> piece.color() == color)
                 .mapToDouble(piece -> piece.score(isOverlapped))
                 .sum();

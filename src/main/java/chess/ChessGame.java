@@ -48,7 +48,7 @@ public class ChessGame {
         if (fenDao.exists()) {
             Command command = inputView.askLoadOrStart();
             if (command.isLoad()) {
-                Fen fen = fenDao.find();
+                Fen fen = fenDao.find("1");
                 return ChessboardFactory.from(fen);
             }
             Chessboard chessboard = ChessboardFactory.create();
